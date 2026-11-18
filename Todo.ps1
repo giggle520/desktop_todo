@@ -164,7 +164,7 @@ function Render-Tasks([int]$selected = -1) {
                 $spacer = $list.Rows[$list.Rows.Add()]
                 $spacer.Height = $list.RowTemplate.Height
                 $spacer.Tag = 'completed-spacer'
-                $spacer.Cells[0] = [Windows.Forms.DataGridViewTextBoxCell]::new()
+
                 $spacer.DividerHeight = 0
                 $spacer.DefaultCellStyle.BackColor = $form.BackColor
                 $spacer.DefaultCellStyle.SelectionBackColor = $form.BackColor
@@ -302,6 +302,13 @@ foreach ($grid in @($list)) {
         if ($_.KeyCode -eq 'F2') { $edit.PerformClick(); $_.SuppressKeyPress = $true }
     })
 }
+$list.Add_CellPainting({
+    if ($_.RowIndex -lt 0 -or $_.ColumnIndex -ne 0) { return }
+    if ($list.Rows[$_.RowIndex].Tag -is [int]) { return }
+    $_.PaintBackground($_.ClipBounds, $true)
+    $_.Paint($_.ClipBounds, [Windows.Forms.DataGridViewPaintParts]::Border)
+    $_.Handled = $true
+})
 Render-Tasks
 $tray = [Windows.Forms.NotifyIcon]::new()
 $tray.Icon = [Drawing.Icon]::new((Join-Path $PSScriptRoot 'Todo.ico'))
