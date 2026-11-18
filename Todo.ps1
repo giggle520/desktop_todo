@@ -164,6 +164,7 @@ function Render-Tasks([int]$selected = -1) {
                 $spacer = $list.Rows[$list.Rows.Add()]
                 $spacer.Height = $list.RowTemplate.Height
                 $spacer.Tag = 'completed-spacer'
+                $spacer.Cells[0] = [Windows.Forms.DataGridViewTextBoxCell]::new()
                 $spacer.DividerHeight = 0
                 $spacer.DefaultCellStyle.BackColor = $form.BackColor
                 $spacer.DefaultCellStyle.SelectionBackColor = $form.BackColor
