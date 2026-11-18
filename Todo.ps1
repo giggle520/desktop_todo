@@ -171,7 +171,7 @@ function Render-Tasks([int]$selected = -1) {
             }
             $groupRow = $list.Rows[$list.Rows.Add()]
             $groupRow.Tag = 'completed-group'
-            $groupRow.Cells[1].Value = $(if ($script:showCompleted) { '▾' } else { '▸' }) + "  已完成 ($completed)"
+            $groupRow.Cells[1].Value = "已完成 ($completed)"
             $groupRow.DefaultCellStyle.BackColor = [Drawing.Color]::FromArgb(235, 240, 252)
             if (!$script:showCompleted) { continue }
         }
@@ -307,6 +307,11 @@ $list.Add_CellPainting({
     if ($list.Rows[$_.RowIndex].Tag -is [int]) { return }
     $_.PaintBackground($_.ClipBounds, $true)
     $_.Paint($_.ClipBounds, [Windows.Forms.DataGridViewPaintParts]::Border)
+    if ($list.Rows[$_.RowIndex].Tag -eq 'completed-group') {
+        $arrow = if ($script:showCompleted) { '▾' } else { '▸' }
+        $flags = [Windows.Forms.TextFormatFlags]::HorizontalCenter -bor [Windows.Forms.TextFormatFlags]::VerticalCenter
+        [Windows.Forms.TextRenderer]::DrawText($_.Graphics, $arrow, $list.Font, $_.CellBounds, $_.CellStyle.ForeColor, $flags)
+    }
     $_.Handled = $true
 })
 Render-Tasks
